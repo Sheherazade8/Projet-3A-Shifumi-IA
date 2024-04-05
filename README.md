@@ -1,4 +1,4 @@
-# Projet3A_Shifumi_IA
+# Projet 3A Shifumi IA
 
 ## Overview
 This repository contains the Shifumi project developed by the LIS laboratory in collaboration with Centrale Méditerranée, focusing on the development of an artificial intelligence agent for the game of "Rock, Paper, Scissors" (Shifumi): the goal is to improve the gesture recognition capabilities to enhance the interaction between the AI agent and human players.
