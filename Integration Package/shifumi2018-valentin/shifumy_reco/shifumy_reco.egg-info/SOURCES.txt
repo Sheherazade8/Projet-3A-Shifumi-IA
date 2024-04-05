@@ -1,0 +1,14 @@
+README.rst
+setup.cfg
+setup.py
+shifumy_reco/__init__.py
+shifumy_reco/base.py
+shifumy_reco/gesture_classifier.py
+shifumy_reco/gesture_recognition_client.py
+shifumy_reco/image_processing.py
+shifumy_reco/utils.py
+shifumy_reco.egg-info/PKG-INFO
+shifumy_reco.egg-info/SOURCES.txt
+shifumy_reco.egg-info/dependency_links.txt
+shifumy_reco.egg-info/requires.txt
+shifumy_reco.egg-info/top_level.txt
