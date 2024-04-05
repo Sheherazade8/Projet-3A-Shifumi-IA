@@ -10,7 +10,7 @@ This repository contains the Shifumi project developed by the LIS laboratory in 
 - **Dataset**: A folder containing some data we used for the project.
 
 ## Project Description
-The Shifumi project focuses on enhancing the hand gesture recognition system to be integrated into the larger project involving an artificial intelligence agent for the game of "Rock, Paper, Scissors" (Shifumi). The improved gesture recognition system aims to enhance the interaction between the AI agent and human players by accurately recognizing hand gestures.
+The Shifumi project focuses on enhancing the hand gesture recognition system to be integrated into the larger project involving an artificial intelligence agent for the game of "Rock, Paper, Scissors" (Shifumi). The new gesture detection tool has been successfully developed and is fully functional. However, further work is needed to complete its integration into the main project.
 
 ## Collaboration
 Charles Bouyrou and D. Rebecca HOUITTE worked on the development and testing of the hand gesture recognition tool.
