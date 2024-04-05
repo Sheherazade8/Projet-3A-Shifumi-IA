@@ -1,0 +1,332 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{graphicx}
+\usepackage{xspace}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{fullpage}
+\usepackage{pythontex}
+
+\renewcommand{\algorithmicrequire}{\textbf{Entrée(s):}}
+\renewcommand{\algorithmicensure}{\textbf{Sortie:}}
+\renewcommand{\algorithmicfor}{\textbf{Pour}}
+\renewcommand{\algorithmicendfor}{\textbf{Fin du Pour}}
+\renewcommand{\algorithmicwhile}{\textbf{Tant que}}
+\renewcommand{\algorithmicendwhile}{\textbf{Fin du Tant que}}
+\renewcommand{\algorithmicdo}{\textbf{faire}}
+\renewcommand{\algorithmicif}{\textbf{Si}}
+\renewcommand{\algorithmicthen}{\textbf{alors}}
+\renewcommand{\algorithmicelse}{\textbf{sinon}}
+\renewcommand{\algorithmicendif}{\textbf{Fin du Si}}
+\renewcommand{\algorithmicreturn}{\textbf{Renvoyer}}
+\renewcommand{\algorithmicrepeat}{\textbf{Répéter}}
+\renewcommand{\algorithmicuntil}{\textbf{Jusqu'à ce que}}
+\floatname{algorithm}{Algorithme}
+
+\theoremstyle{plain} % Used for theorems, lemmas, propositions, etc. (default) 	
+\newtheorem{thm}{Théorème} 
+\newtheorem{propr}{Propriété} 
+\newtheorem{propo}{Proposition} 
+\theoremstyle{definition} % Used for definitions and examples
+\newtheorem{definition}{Définition} 
+\theoremstyle{remark} % Used for remarks and notes
+
+\def\noeud{n\oe ud\xspace}
+\def\noeuds{n\oe uds\xspace}
+
+% Espérance de #2 par rapport à la variable aléatoire #1
+\newcommand{\expectation}[2]{\mathbb{E}_{#1}\left [#2\right ]} 
+% Fonction indicatrice/charactéristique
+\newcommand{\one}[1]{\mathds{1}_{#1}}
+% Probabilité
+\newcommand{\proba}[1]{\mathbb{P}\left (#1\right )} 
+% Gain
+\newcommand{\gain}[2]{\mathcal{G}_{#1}\left (#2\right )}
+% Espérance de gain
+\newcommand{\espgain}[1]{\mathcal{E}\left (#1\right )}
+\newcommand{\moygain}[1]{\widehat{\mathcal{E}}\left (#1\right )}
+
+\author{Mathias Aloui, Valentin Emiya\\Aix-Marseille Université}
+\title{Arbre de décision pour le Shifumi}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Notations}
+On utilisera la lettre $g$ pour désigner un \textbf{geste} et $\Sigma=\left \lbrace \texttt{'Rock'}, \texttt{'Paper'}, \texttt{'Scissors'}\right \rbrace$ (ou plus simplement $\Sigma=\left \lbrace \texttt{'R'}, \texttt{'P'}, \texttt{'S'}\right \rbrace$) l'ensemble des gestes possibles.
+Un \textbf{tour de jeu}, ou \textit{\textbf{round}}, est désigné par la lettre $r$ et est un couple $r=\left (g_o, g_a\right )\in\Sigma\times\Sigma$ où $g_o$ est le geste du joueur adverse (\textit{opponent}) et $g_a$ le geste de l'agent.
+Une \textbf{partie} est une suite finie de tours de jeux entre deux joueurs fixés, listés du plus ancien au plus récent, et désignée par la lettre $\textbf{s}$.
+Par exemple, $\textbf{s}=\left (r_0, r_1, r_2\right )$ est une partie à trois tours, d'abord $r_0$, puis $r_1$ et enfin $r_2$.
+
+\section{Arbre de décision pour le Shifumi}
+\subsection{Description de l'arbre}
+Chaque \noeud de l'arbre porte une étiquette contenant trois entier $n_r, n_p, n_s$ dont le sens est expliqué ci-dessous.
+Chaque \noeud possède au plus 9 fils.
+L'arrête entre un \noeud et l'un de ses fils porte comme étiquette un round $r\in\Sigma^2$ parmi les $\left |\Sigma^2\right | = 9$ rounds possibles.
+Il ne peut pas y avoir deux arrêtes avec la même étiquette partant d'un même \noeud.
+
+Un \noeud de profondeur $n$ est atteignable par une suite de coups $(r_0, r_1, \ldots, r_{n-1})$, correspondant aux étiquettes des arrêtes en partant de la racine et en descendant dans l'arbre.
+Cette suite de coups s'appelle un \textbf{chemin} entre la racine et le \noeud considéré, ou plus simplement un chemin jusqu'au \noeud considéré.
+On pourra désigner un \noeud de profondeur $n$ par le chemin permettant d'y accéder (la racine étant accessible par le chemin vide $\emptyset$).
+Pour tout $g\in\Sigma$, ce \noeud porte comme étiquette le nombre $n_g$ de coups $g$ de l'adversaire observés immédiatement à la suite de $(r_0, r_1, \ldots, r_{n-1})$ durant l'apprentissage.
+Le \noeud n'existe que si la séquence $(r_0, r_1, \ldots, r_{n-1})$ suivie d'un autre tour a été vue au moins une fois lors de l'apprentissage.
+
+Exemple:
+
+\subsection{Algorithmes d'apprentissage de l'arbre}
+
+Le principal algorithme est l'apprentissage à partir d'un nouveau round et de son historique, tel que spécifié par l'Algorithme~\ref{alg:learn_latest_round}. Pour une séquence $s$ de longueur $n$, il consiste compter le dernier coup $s\left [n-1\right ]\left [0\right ]$ du joueur adverse dans tous les \noeuds le long d'une descente dans l'arbre depuis la racine, en suivant le chemin $s\left [n-2\right ], s\left [n-3\right ], \ldots, s\left [0\right ]$.
+
+L'Algorithme~\ref{alg:learn_latest_round} peut être utilisé dans deux situations:
+\begin{itemize}
+\item \textit{batch learning} (Algorithme~\ref{alg:learn_all_sequences}): on dispose d'un ensemble de parties, et on appelle l'Algorithme~\ref{alg:learn_latest_round} pour chaque sous-séquence préfixe de chaque partie, une sous-séquence préfixe étant une sous-séquence commençant à l'indice 0 (round le plus ancien) et se terminant à n'importe quelle indice de la séquence considérée;
+\item \textit{online learning}: partant d'un arbre vide, une mise à jour est effectuée à chaque nouveau coup, en appelant l'Algorithme~\ref{alg:learn_latest_round} avec la séquence courante.
+\end{itemize}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\REQUIRE un arbre $a$ et une séquence de coups $s$ de taille strictement positive.
+\ENSURE l'arbre $a$ mis à jour
+\STATE $n \leftarrow \texttt{length}(s)$
+\STATE $\left (g_o, g_a\right ) \leftarrow s\left [-1\right ]$ \COMMENT{le dernier round contient le coup à prédire $g_o$}
+\IF{$\texttt{is\_empty}(a)$}
+    \STATE $a \leftarrow \texttt{create\_leaf}()$
+\ENDIF
+\COMMENT{}
+\STATE $\texttt{increment}\left (a, g_o\right )$
+\STATE $\gamma \leftarrow a$ \COMMENT{initialisation du \noeud courant}
+\FOR{$i$ de $n-1$ à $0$ par pas de $-1$}
+\IF{$\gamma\left [s\left [i\right ]\right ]$ n'existe pas}
+\STATE $\gamma\left [s\left [i\right ]\right ] \leftarrow \texttt{create\_leaf}()$
+\ENDIF
+\STATE $\gamma \leftarrow \gamma\left [s\left [i\right ]\right ]$
+\STATE $\texttt{increment}\left (\gamma, g_o\right )$
+\ENDFOR
+%\STATE $\texttt{current\_node} \leftarrow \texttt{root}\left (a\right )$
+\RETURN $a$
+\end{algorithmic}
+\caption{\texttt{learn\_latest\_round(a, s)}}
+\label{alg:learn_latest_round}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\REQUIRE un ensemble de séquences $\mathcal{S}$
+\ENSURE l'arbre appris
+\STATE $a \leftarrow $ \verb+cree_arbre_vide+$()$
+\FOR{$s\in\mathcal{S}$}
+    \FOR{$n$ de $1$ à \texttt{length}$(s)$}
+        \STATE \verb+learn_latest_round+$(a, s[:n] )$
+    \ENDFOR
+\ENDFOR
+\RETURN $a$
+\end{algorithmic}
+\caption{\texttt{learn\_all\_sequences(set\_of\_sequences)}}
+\label{alg:learn_all_sequences}
+\end{algorithm}
+
+\subsection{Algorithmes de prédiction du prochain coup}
+\subsubsection{Stratégie simple: descente au plus profond}
+L'Algorithme~\ref{alg:prediction_descente_simple} permet de prédire un coup à partir de l'historique de la partie selon un principe simple: en remontant l'historique à partir du dernier round, on descend le plus loin possible dans l'arbre;
+on s'arrête soit après avoir parcouru tout l'historique, soit lorsqu'on rencontre un \noeud n'ayant pas le fils correspondant à la suite de l'historique;
+les informations portées par le \noeud où l'on s'arrête permettent ensuite de prendre une décision sur le coup à prédire.
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\REQUIRE un arbre de prédiction $t$, une séquence de coups $s$ de taille quelconque.
+\ENSURE la prédiction du coup que l'adversaire va jouer à la suite de la séquence d'entrée
+\IF{\texttt{is\_empty}$(t)$}
+    \RETURN \verb+draw_random_gesture+$()$
+\ENDIF
+\STATE $n \leftarrow \texttt{length}(s)$
+\IF{$n=0$ or not $\texttt{has\_son}\left (t, s\left [-1\right ]\right )$}
+    \RETURN \verb+compute_prediction+$\left (\texttt{etiquette}\left (t\right )\right )$
+\ENDIF
+\RETURN $\texttt{predict_agent_gesture\_simple\_descent}\left (\texttt{get\_son} \left (t, s\left [-1\right ]\right ), s\left [:-1\right ]\right )$
+\end{algorithmic}
+\caption{\texttt{predict_agent_gesture\_deepest\_descent}$\left (t, s\right )$: prédiction par descente au plus profond}
+\label{alg:prediction_descente_simple}
+\end{algorithm}
+
+\subsubsection{Stratégie prenant en compte un intervalle de confiance}
+
+
+\paragraph{Intervalle de confiance sur l'espérance de gain pour $n$ observations indépendantes de gestes.}
+
+TODO: mettre les définitions et notations plus haut?
+
+On considère $n$ variables aléatoires $G_{0}, \ldots, G_{n-1}\in\Sigma\triangleq\left \lbrace R, P, S\right \rbrace$ i.i.d. de distribution inconnue $\mathcal{D}_a$.
+Pour $g\in\Sigma$ et $i\in\left [n\right ]$, on note $\mu_g \triangleq \expectation{G_i}{\one{G_i=g}}=\proba{G_i=g}$ ($\mu_g$ ne dépend pas de $i$ car les variables sont i.i.d.).
+On note $\widehat{\mu}_g\triangleq\frac{1}{n}\sum_{i\in\left [n\right ]} \one{G_i=g}$ la moyenne empirique des $G_i$.
+
+\begin{definition}[Gain]
+Pour $g_o, g_a\in\Sigma$, on définit le gain $\gain{g_a}{g_o}$ obtenu par l'agent lorsqu'il joue $g_a$ alors que l'adversaire joue $g_o$:
+\begin{align}
+\gain{R}{g_o} & \triangleq \one{g_o=S} - \one{g_o=P}\\
+\gain{P}{g_o} & \triangleq \one{g_o=R} - \one{g_o=S}\\
+\gain{S}{g_o} & \triangleq \one{g_o=P} - \one{g_o=R}
+\end{align}
+\end{definition}
+
+\begin{definition}[Espérance de gain et moyenne empirique]
+Lorsque l'agent joue $g_a\in\Sigma$, l'espérance de gain $\espgain{g_a}$ et la moyenne de gain empirique sont respectivement
+\begin{align}
+\espgain{g_a} & \triangleq \expectation{G\sim\mathcal{D}_a}{\gain{g_a}{G}}
+=
+\begin{cases}
+\mu_S - \mu_P & \text{ si } g_a = R\\
+\mu_R - \mu_S & \text{ si } g_a = P\\
+\mu_P - \mu_R & \text{ si } g_a = S\\
+\end{cases} \label{eqn:expected_gain}\\
+\moygain{g_a} & \triangleq 
+\frac{1}{n} \sum_{i\in\left [n\right ]} \gain{g_a}{G_i}
+=
+\begin{cases}
+\widehat{\mu}_S - \widehat{\mu}_P & \text{ si } g_a = R\\
+\widehat{\mu}_R - \widehat{\mu}_S & \text{ si } g_a = P\\
+\widehat{\mu}_P - \widehat{\mu}_R & \text{ si } g_a = S\\
+\end{cases}\label{eqn:average_gain}
+\end{align}
+\end{definition}
+
+\begin{propo}[Intervalle de confiance sur l'espérance de gain] Avec les notations précédentes, pour $\alpha \in \left ]0, 1\right ]$ et $g_a\in\Sigma$, l'intervalle de confiance de niveau de confiance $1-\alpha$ est de rayon $\sqrt{\frac{2}{n}\ln \frac{2}{\alpha}}$:
+\begin{align}
+\proba{\left |\espgain{g_a}-\moygain{g_a}\right | > \epsilon} \leq \alpha
+\text{ avec }
+\epsilon \triangleq \sqrt{\frac{2}{n}\ln \frac{2}{\alpha}}
+\label{eqn:intervalle_confiance}
+\end{align}
+\end{propo}
+
+\begin{proof}
+Soit $\epsilon>0$. En appliquant, l'inégalité de Hoeffding (théorème~\ref{thm:hoeffding}) en posant $Y_i \triangleq \frac{\gain{g_a}{G_i}-\espgain{g_a}}{n}$, $a_i\triangleq\frac{-1-\espgain{g_a}}{n}$ et $b_i\triangleq\frac{1-\espgain{g_a}}{n}$ et $t\triangleq n\epsilon$, on a
+\begin{align}
+\proba{\espgain{g_a}-\moygain{g_a} < \epsilon} \leq e^{-\frac{n}{2}\epsilon^2}
+\end{align}
+De façon similaire, on a aussi $\proba{\espgain{g_a}-\moygain{g_a} < -\epsilon} \leq e^{-\frac{n}{2}\epsilon^2}$, donc 
+\begin{align}
+\proba{\left |\espgain{g_a}-\moygain{g_a}\right | < \epsilon} \leq 2 e^{-\frac{n}{2}\epsilon^2}
+\end{align}
+\end{proof}
+
+Le tableau~\ref{tab:ic} donne un aperçu du rayon de l'intervalle de confiance en pratique.
+
+\begin{table}[tbh]
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+& $n=1$ & $n=2$ & $n=4$ & $n=8$ & $n=16$ & $n=32$ & $n=64$ & $n=128$ & $n=256$ & $n=512$ \\
+\hline
+$\alpha = 0.5$ & $1.67$ & $1.18$ & $0.83$ & $0.59$ & $0.42$ & $0.29$ & $0.21$ & $0.15$ & $0.10$ & $0.07$ \\
+\hline
+$\alpha = 0.3$ & $1.95$ & $1.38$ & $0.97$ & $0.69$ & $0.49$ & $0.34$ & $0.24$ & $0.17$ & $0.12$ & $0.09$ \\
+\hline
+$\alpha = 0.1$ & $2.45$ & $1.73$ & $1.22$ & $0.87$ & $0.61$ & $0.43$ & $0.31$ & $0.22$ & $0.15$ & $0.11$ \\
+\hline
+$\alpha = 0.05$ & $2.72$ & $1.92$ & $1.36$ & $0.96$ & $0.68$ & $0.48$ & $0.34$ & $0.24$ & $0.17$ & $0.12$ \\
+\hline
+$\alpha = 0.01$ & $3.26$ & $2.30$ & $1.63$ & $1.15$ & $0.81$ & $0.58$ & $0.41$ & $0.29$ & $0.20$ & $0.14$ \\
+\hline
+\end{tabular}
+\caption{Rayon de l'intervalle de confiance pour différents niveaux de confiance $1-\alpha$ et nombres de réalisations $n$.}
+\label{tab:ic}
+\end{table}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\REQUIRE un arbre de prédiction $t$, une séquence de coups $s$ de taille quelconque, $\alpha \in \left ]0, 1\right ]$  pour un niveau de confiance $1-\alpha$.
+\ENSURE la prédiction du coup que l'adversaire va jouer à la suite de la séquence d'entrée
+\IF{\texttt{is\_empty}$(a)$}
+    \RETURN \verb+draw_random_gesture+$()$
+\ENDIF
+\STATE $\texttt{current\_node} \leftarrow t$
+\STATE $\texttt{best\_lower\_bound} \leftarrow -\infty$
+\STATE $\texttt{best\_node} \leftarrow \texttt{None}$
+\LOOP
+    \STATE $\widehat{\mu}\leftarrow \max_{g_a} \texttt{empirical\_average\_gain}\left (\texttt{current\_node}, g_a\right )$ \COMMENT{équation~\eqref{eqn:average_gain}}
+    \STATE $\epsilon \leftarrow \texttt{compute\_CI}\left (\texttt{current\_node}, \alpha\right )$ \COMMENT{équation~\eqref{eqn:intervalle_confiance}}
+    \IF{$\texttt{best\_lower\_bound} < \widehat{\mu}-\epsilon$}
+      \STATE $\texttt{best\_lower\_bound}\leftarrow \widehat{\mu}-\epsilon$
+      \STATE $\texttt{best\_node} \leftarrow \texttt{current\_node}$
+    \ENDIF
+    \IF{\texttt{is\_empty}$(s)$ ou not $\texttt{has\_son}\left (\texttt{current\_node}, s\left [-1\right ]\right )$}
+      \STATE break
+    \ENDIF
+    \STATE $\texttt{current\_node} \leftarrow \texttt{current\_node}\left [s\left [-1\right ]\right ]$
+    \STATE $s \leftarrow s\left [:-1\right ]$
+\ENDLOOP
+\RETURN \verb+compute_prediction+$\left (\texttt{etiquette}\left (\texttt{best\_node}\right )\right )$
+\end{algorithmic}
+\caption{\texttt{predict_agent_gesture\_ci\_descent}$\left (t, s\right )$: prédiction par descente avec intervalle de confiance}
+\label{alg:prediction_descente_ic}
+\end{algorithm}
+
+\paragraph{Cas de l'apprentissage \textit{batch}: élagage de l'arbre.}
+
+Lorsque l'arbre est fixé, c'est-à-dire lors d'un apprentissage \textit{batch}, on peut l'élaguer via l'algorithme~\ref{alg:elagage_confiance} pour obtenir un arbre réduit équivalent en terme de prédiction, au sens de la propriété~\ref{thm:elagage}.
+
+\begin{propr}\label{thm:elagage} Soit $t$ un PST, $t'=\texttt{prune}\left (t\right )$, $s$ une séquence. Soit $n_1, \ldots, n_k$ les \noeuds obtenus en descendant dans $t$ selon $s$ et $n'_1, \ldots, n'_{k'}$ les \noeuds obtenus en descendant dans $t'$ selon $s$. Alors $$\max\left \lbrace \texttt{valeur}\left (n_i\right ), 1 \leq i \leq k\right \rbrace = \max\left \lbrace \texttt{valeur}\left (n'_i\right ), 1 \leq i \leq k'\right \rbrace.$$
+\end{propr}
+
+\begin{proof}
+À COMPLÉTER
+\end{proof}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\REQUIRE un arbre $t$
+\ENSURE la valeur max $m^*$ associée à l'arbre, qui est élagué sur place
+\STATE $m^* \leftarrow \texttt{valeur}(t)$
+\FOR{chaque fils $c$ de $t$}
+  \STATE $m \leftarrow \texttt{prune}\left (c\right )$
+  \IF{$m \leq \texttt{valeur}(t)$}
+    \STATE $t.\texttt{remove}\left (c\right )$
+  \ELSE
+    \STATE $m^* \leftarrow \texttt{max}\left (m^*, m\right )$
+  \ENDIF
+\ENDFOR
+\RETURN $m^*$
+\end{algorithmic}
+\caption{\texttt{prune}$\left (t\right )$}
+\label{alg:elagage_confiance}
+\end{algorithm}
+
+\section{Prise de décision de l'agent}
+La prédiction renvoyé par l'Algorithme~\ref{alg:prediction_descente_simple} se présente sous forme d'un triplet $(p_R, p_P, p_S)$ correspondant à la probabilté d'apparition de chaque geste au prochain round.
+
+Une première approche, dite ``aggressive'', est de choisir le geste ($g_{agg}$)permettant de gagner face au geste ayant la plus forte probabilité d'apparaître.
+Mais il est possible de calculer une espérance de gain pour chacun des gestes.
+En fixant le gain pour un geste gagnant à 1 et la perte pour un geste perdant à -1 (le gain d'un match nul est 0), on observe que la meilleure stratégie n'est pas toujours celle la plus ``aggressive''.
+Le geste ayant l'espérance de gain maximale ($g_{esp}$) n'est pas toujours le même que $g_a$.
+
+(formule)
+
+Il existe donc 4 configurations pour l'espérance de chaque coup.
+
+(graphe à trois axe)
+
+
+TODO: parler de la façon de prédire un coup à partir d'un \noeud (espérance de gain vs. max)
+TODO: parler des limites et des stratégies de prédiction plus élaborées.
+
+
+\appendix
+\section{Rappels}
+\begin{thm}[Inégalité de Hoeffding]\label{thm:hoeffding}
+Soit $Y_0, \ldots, Y_{n-1}$ des variables aléatoires indépendantes telles que $\forall i, \expectation{}{Y_i}=0$ et $a_i\leq Y_i \leq b_i$. Alors
+\begin{align}
+\forall \epsilon > 0, \forall t>0, \proba{\sum_{i\in\left [n\right ]}Y_i > \epsilon} \leq e^{-t\epsilon} \prod_{i\in\left [n\right ]} e^{\frac{t^2}{8}\left (b_i-a_i\right )^2}.
+\end{align}
+\end{thm}
+%L'arbre est ainsi constitué:
+%\begin{itemize}
+%\item la racine contient le nombre de chacun des gestes joué par l'adversaire dans la base d'apprentissage, sans prendre en compte un quelconque historique.
+%\item pour chaque 
+%\end{itemize}
+\end{document}

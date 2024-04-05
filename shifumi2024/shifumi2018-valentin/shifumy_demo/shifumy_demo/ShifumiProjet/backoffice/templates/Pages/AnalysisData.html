@@ -1,0 +1,76 @@
+{% extends 'Layout/base.html' %}
+{% load static %}
+{% load fontawesome %}
+
+
+
+{% block content %}
+
+
+	<a href="/">
+	<button  class="btn btn-secondary" style="float:left;margin-top:0.5%"  data-toggle="modal">
+		{% fontawesome_icon 'home' color='white' %}
+
+   </button>
+		</a>
+<br>
+
+
+
+<h2>Tout Les Parties</h2>
+
+
+
+<table border="2px" cellspacing="2px" cellpadding="4px">
+    <tr>
+        <td>Pseudo</td>
+        <td>Nombre de round</td>
+        <td>Nombre de victoire </td>
+        <td>Pourcentage de gain </td>
+    </tr>
+
+
+    <!--{{len}}-->
+
+
+{% for dt in dataOrderGain%}
+<tr>
+        <td>{{dt.Pseudo_player}}</td>
+        <td>{{dt.round}}</td>
+        <td>{{dt.Gain}}</td>
+        <td>{{dt.nb_gain |floatformat:3}}%</td>
+</tr>
+
+{% endfor%}
+</table>
+
+<img src='{% static ""%}images/TableauBord/stat_all_agent.png'>
+
+
+
+
+<br><br>
+
+
+    <form action="/Analysis" method="post">
+        {% csrf_token %}
+
+
+           <button  type="submit"  name="Download" value="All" class="btn" style="margin-left:95%;background-color:white">
+                {% fontawesome_icon 'file-excel-o'%}
+
+			</button>
+
+        </br></br>
+
+
+    </form>
+
+{% endblock %}
+
+{% block javascript%}
+  function load()
+{
+setTimeout("window.open('http://127.0.0.1:8000/Analysis', '_self');", 10000);
+}
+{% endblock %}
