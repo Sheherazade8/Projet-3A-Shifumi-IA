@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!-- saved from url=(0100)http://rockpaperscissors.mybluemix.net/RPSChallenge?cm_sp=dw-bluemix-_-clouddataservices-_-devcenter -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <title>Rock Paper Scissors | IBM Spark</title>
+  
+  <link rel="icon" type="image/png" href="http://rockpaperscissors.mybluemix.net/img/favicon_76.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="http://rockpaperscissors.mybluemix.net/img/favicon_76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="http://rockpaperscissors.mybluemix.net/img/favicon_152.png">
+  <!-- <link rel="apple-touch-startup-image" href="/img/Background_Scissors.png"> -->
+  
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/fonts/PromixaNova/Proxima-Nova-Light.otf" as="font">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/fonts/Ziggurat/Ziggurat-HTF-Black.ttf" as="font">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/fonts/Champion/Champion-HTF-Lightweight.ttf" as="font">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/fonts/Champion/Champion-HTF-Featherweight.ttf" as="font">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/fonts/Champion/Champion-HTF-Bantamweight.ttf" as="font">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/fonts/Champion/Champion-HTF-Flyweight.ttf" as="font">
+  <link rel="prefetch" href="./Rock Paper Scissors _ IBM Spark_files/Hands_Human_rock.png">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/img/Hands_Human_paper.png">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/img/Hands_Human_scissors.png">
+  <link rel="prefetch" href="./Rock Paper Scissors _ IBM Spark_files/Hands_Robot_rock.png">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/img/Hands_Robot_paper.png">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/img/Hands_Robot_scissors.png">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/img/Background_Origional.png">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/img/Background_Rock.png">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/img/Background_Paper.png">
+  <link rel="prefetch" href="http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png">
+  
+  <link rel="stylesheet" href="./Rock Paper Scissors _ IBM Spark_files/bootstrap.min.css">
+  <link rel="stylesheet" href="./Rock Paper Scissors _ IBM Spark_files/rps.css">
+  <link rel="stylesheet" href="./Rock Paper Scissors _ IBM Spark_files/ipad.css">
+  
+  <script src="./Rock Paper Scissors _ IBM Spark_files/angular.min.js.téléchargement"></script>
+  <script src="./Rock Paper Scissors _ IBM Spark_files/angular-route.min.js.téléchargement"></script>
+  <script src="./Rock Paper Scissors _ IBM Spark_files/angular-animate.min.js.téléchargement"></script>
+  <script src="./Rock Paper Scissors _ IBM Spark_files/jquery-1.11.3.min.js.téléchargement"></script>
+  <script src="./Rock Paper Scissors _ IBM Spark_files/jquery-ui.min.js.téléchargement"></script>
+  <script src="./Rock Paper Scissors _ IBM Spark_files/bootstrap.min.js.téléchargement"></script>
+  
+  <script src="./Rock Paper Scissors _ IBM Spark_files/uuid.js.téléchargement"></script>
+  <script src="./Rock Paper Scissors _ IBM Spark_files/rpsapp.js.téléchargement"></script>
+  <script src="./Rock Paper Scissors _ IBM Spark_files/rpsservice.js.téléchargement"></script>
+  <script src="./Rock Paper Scissors _ IBM Spark_files/playerservice.js.téléchargement"></script>
+</head>
+<body ng-app="rpsApp" class="ng-scope">
+<!-- start main -->
+  <!-- ngView:  --><div ng-view="" class="ng-scope" style=""><div ng-switch="gameState" ng-controller="rpsController" ng-class="{&#39;background-original&#39;:gameState}" class="ng-scope background-original" style="">
+  
+<!-- NEW ROUND TITLE VIEW -->
+  <!-- ngSwitchWhen: newround -->
+  
+<!-- ROCK,PAPER,SCISSORS,SHOOT -->
+  <!-- ngSwitchWhen: rpscountdown --><div ng-switch-when="rpscountdown" class="rps-container rps-container-shoot container-fluid ng-scope background-rock background-paper" style="">
+    <div class="row rps-countdown-row">
+      <div class="col-md-6 rps-countdown">
+          <img src="http://rockpaperscissors.mybluemix.net/img/Hands_Human_paper.png" class="img-responsive rps-countdown-paper" name="rock">
+      </div>
+      <div class="col-md-6 rps-countdown">
+          <img src="http://rockpaperscissors.mybluemix.net/img/Hands_Robot_paper.png" class="img-responsive rps-countdown-paper" name="rock">
+      </div>
+    </div>
+  </div><!-- end ngSwitchWhen: -->
+  
+<!-- SELECT YOUR MOVE -->
+  <!-- ngSwitchWhen: makeamove -->
+  
+<!-- SHOW RESULTS -->
+  <!-- ngSwitchWhen: play -->
+  
+<!-- GAME WINNER -->
+  <!-- ngSwitchWhen: gamewinner -->
+  
+<!-- START/TITLE VIEW -->
+  <!-- ngSwitchDefault:  -->
+
+<!-- REGISTER PLAYER MODAL -->
+<div class="modal fade" id="registerPlayer" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Player Info</h4>
+          </div>
+          <div class="modal-body" id="registerPlayerBody">
+            <form name="registerPlayerForm" class="form-horizontal ng-pristine ng-valid" novalidate="">
+            <div class="row">
+              <div class="col-xs-2 col-xs-offset-1">
+                <!-- ngIf: !player.headShotPng --><img ng-if="!player.headShotPng" ng-src="/img/userSilhouetteSmall.png" class="player-image img-responsive set-opacity ng-scope" alt="Player Profile" src="./Rock Paper Scissors _ IBM Spark_files/userSilhouetteSmall.png"><!-- end ngIf: !player.headShotPng -->
+                <!-- ngIf: player.headShotPng -->
+              </div>
+              <div class="col-xs-9">
+                <div class="form-group">
+                    <label for="username" class="control-label col-xs-3">Username:</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="username" name="username" ng-model="player._id" ng-change="playerNameCheck(player)" placeholder="Enter a username (optional)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="control-label col-xs-3">First Name:</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="firstname" name="firstname" ng-model="player.firstName" placeholder="Enter a first name (optional)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname" class="control-label col-xs-3">Last Name:</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="lastname" name="lastname" ng-model="player.lastName" placeholder="Enter a last name (optional)">
+                    </div>
+                </div>
+              </div>
+            </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" ng-click="showPlayerForm(false)">Cancel</button>
+              <button type="submit" class="btn btn-primary" ng-click="submitPlayer(player)">Play</button>
+          </div>
+        </div>
+    </div>
+</div>
+
+</div></div>
+<!-- end main -->
+
+</body></html>

@@ -1,0 +1,41 @@
+
+angular.module('rpsSpark', [], function() {
+	
+}).factory('sparkService', function($q, $http, $location) {
+	return {
+		getSparkPlay: function(player) {
+    		var deferred = $q.defer();
+    		var params = {};
+    		if (player && player != "") {
+    			params["player"] = player;
+    		}
+			$http.get("/spark/play", {
+					params: params
+				})
+				.success(function(data) {
+					deferred.resolve(data);
+				})
+				.error(function(data, status) {
+					console.error(status, data);
+					deferred.reject(data.error || data);
+				});
+
+    		return deferred.promise;
+		},
+
+        sendGamePay: function(game) {
+        	var deferred = $q.defer();
+        	
+        	$http.post('/spark/play', game, {json: true})
+        		.success(function(data) {
+        			deferred.resolve(data);
+        		})
+        		.error(function (data, status) {
+					console.error(status, data);
+        			deferred.reject(data.error || data);
+        		});
+        	
+        	return deferred.promise;
+        }
+	}
+});
