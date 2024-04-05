@@ -1,0 +1,30 @@
+Metadata-Version: 2.1
+Name: shifumy-demo-cv
+Version: 0.1
+Summary: Python package for Shifumi game
+Home-page: https://gitlab.lis-lab.fr/qarma/shifumi2018
+Author: Mathias Aloui, Valentin Emiya, Luc Giffon, Ama-Marina Kreme, Kilian Macdonald, Liva RalaivolaIbrahim Souleiman-Mahamoud
+Author-email: valentin.emiya@lis-lab.fr, ibrahim.souleiman-mahamoud@etu.univ-amu.fr, luc.giffon@lis-lab.fr, kilian.macdonald@hotmail.fr, mathias.aloui@etu.univ-amu.fr, liva.ralaivola@lis-lab.fr, ama-marina.kreme@lis-lab.fr, 
+License: GNU General Public License v3 (GPLv3)
+Project-URL: Bug Reports, https://gitlab.lis-lab.fr/qarma/shifumi2018/issues
+Project-URL: Source, https://gitlab.lis-lab.fr/qarma/shifumi2018
+Keywords: shifumi,rock paper scissors,machine learning,artificial intelligence
+Requires-Python: >=3.5
+Provides-Extra: dev
+Provides-Extra: doc
+
+shifumy
+=======
+
+shifumy_demo_cv is a Python package for to play Shifumi
+
+Install
+-------
+
+Install with ``pip`` by running, from directory ```shifumy_demo_cv/``` (the one
+containing ```setup.py```)::
+
+    pip install -e .
+
+For additional details, see doc/install.rst.
+

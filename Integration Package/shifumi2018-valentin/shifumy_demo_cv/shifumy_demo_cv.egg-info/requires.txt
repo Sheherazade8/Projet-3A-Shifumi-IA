@@ -1,0 +1,14 @@
+numpy
+
+[dev]
+coverage
+pytest
+pytest-cov
+pytest-randomly
+ipython
+
+[doc]
+sphinx
+nbsphinx
+numpydoc
+sphinx-paramlinks

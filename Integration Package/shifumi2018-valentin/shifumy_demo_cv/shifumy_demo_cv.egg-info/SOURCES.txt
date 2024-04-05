@@ -1,0 +1,14 @@
+README.rst
+setup.cfg
+setup.py
+shifumy_demo_cv/__init__.py
+shifumy_demo_cv/cv_show.py
+shifumy_demo_cv/main.py
+shifumy_demo_cv/mock_gesture_client.py
+shifumy_demo_cv/show_scores.py
+shifumy_demo_cv/utils.py
+shifumy_demo_cv.egg-info/PKG-INFO
+shifumy_demo_cv.egg-info/SOURCES.txt
+shifumy_demo_cv.egg-info/dependency_links.txt
+shifumy_demo_cv.egg-info/requires.txt
+shifumy_demo_cv.egg-info/top_level.txt
