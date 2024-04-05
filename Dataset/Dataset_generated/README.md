@@ -1,4 +1,4 @@
-# CGI-Generated Images Dataset Description
+# Dataset_generated Description
 
 ## Overview
 This dataset contains approximately 2900 images generated using CGI (Computer Generated Imagery) on a white background. The advantage is the variety of hands (races, ages, genders, nail polish). However, some hands may sometimes appear distorted.
